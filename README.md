@@ -1,36 +1,57 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Mermaid Maker
 
-## Getting Started
+A visual drag-and-drop interface for creating Mermaid diagrams. This application provides an intuitive canvas-based editor that generates Mermaid syntax automatically, eliminating the need to write diagram code manually.
 
-First, run the development server:
+## Features
+
+- Drag-and-drop node placement from a component palette
+- Support for multiple node types: rectangle, circle, diamond, hexagon, stadium, subroutine
+- Visual connection system for linking nodes with arrows
+- Bounding box creation for grouping elements with nested hierarchy
+- Real-time Mermaid diagram preview and syntax generation
+- Undo/redo functionality with complete state history
+- Copy/paste operations for diagram elements
+- Context menu system with element-specific actions
+- Properties panel for customizing colors, borders, and styling
+- Auto-save functionality with 30-second intervals
+- Import/export capabilities for JSON project files, SVG images, and Mermaid code
+
+## Installation
 
 ```bash
+git clone <repository-url>
+cd mermaid-maker
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+The application will be available at `http://localhost:3000`.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Technology Stack
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- Next.js 15 with App Router
+- React 19
+- TypeScript
+- Tailwind CSS 4
+- Mermaid.js for diagram rendering
+- Lucide React for icons
+- HTML5 Drag and Drop API
 
-## Learn More
+## Usage
 
-To learn more about Next.js, take a look at the following resources:
+1. Drag shapes from the left palette onto the canvas
+2. Use the connection tool to link nodes by clicking between them
+3. Create bounding boxes by selecting the bounding box tool and dragging on the canvas
+4. Customize element properties using the right-side panel
+5. View the generated Mermaid diagram in the preview pane
+6. Export diagrams as SVG, Mermaid code, or save projects as JSON files
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Keyboard Shortcuts
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- `Ctrl+Z` - Undo
+- `Ctrl+Y` - Redo  
+- `Ctrl+C` - Copy selected element
+- `Ctrl+V` - Paste element
+- `Ctrl+S` - Save project
+- `Ctrl+O` - Load project
+- `Delete` - Delete selected element

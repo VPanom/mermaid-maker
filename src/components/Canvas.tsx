@@ -5,13 +5,37 @@ import { DiagramState, MermaidNode, NodeType, Connection, BoundingBox } from '@/
 import { NodeComponent } from './NodeComponent';
 import { ConnectionLayer } from './ConnectionLayer';
 import { BoundingBoxComponent } from './BoundingBoxComponent';
+import { ContextMenuItem } from './ContextMenu';
+import { 
+  Clipboard, 
+  Trash2, 
+  Square, 
+  Circle, 
+  Diamond, 
+  Copy, 
+  MousePointer, 
+  X 
+} from 'lucide-react';
 
 interface CanvasProps {
   diagramState: DiagramState;
   onDiagramChange: (state: DiagramState) => void;
+  onShowContextMenu: (event: React.MouseEvent, items: ContextMenuItem[]) => void;
+  onCopy: () => void;
+  onPaste: () => void;
+  onDelete: () => void;
+  hasClipboard: boolean;
 }
 
-export const Canvas: React.FC<CanvasProps> = ({ diagramState, onDiagramChange }) => {
+export const Canvas: React.FC<CanvasProps> = ({ 
+  diagramState, 
+  onDiagramChange, 
+  onShowContextMenu, 
+  onCopy, 
+  onPaste, 
+  onDelete, 
+  hasClipboard 
+}) => {
   const canvasRef = useRef<HTMLDivElement>(null);
   const nodeIdCounter = useRef(0);
   const connectionIdCounter = useRef(0);
@@ -247,6 +271,83 @@ export const Canvas: React.FC<CanvasProps> = ({ diagramState, onDiagramChange })
     setCurrentBoundingBox(null);
   };
 
+  // Context menu handlers
+  const handleCanvasContextMenu = (event: React.MouseEvent) => {
+    const items: ContextMenuItem[] = [
+      {
+        id: 'paste',
+        label: 'Paste',
+        icon: <Clipboard size={16} />,
+        disabled: !hasClipboard,
+        onClick: onPaste,
+      },
+      { id: 'sep1', separator: true },
+      {
+        id: 'clearAll',
+        label: 'Clear All',
+        icon: <X size={16} />,
+        onClick: clearCanvas,
+      },
+    ];
+    
+    onShowContextMenu(event, items);
+  };
+
+  const handleNodeContextMenu = (event: React.MouseEvent, nodeId: string) => {
+    const node = diagramState.nodes.find(n => n.id === nodeId);
+    if (!node) return;
+
+    const items: ContextMenuItem[] = [
+      {
+        id: 'changeType',
+        label: 'Change Shape',
+        icon: <MousePointer size={16} />,
+        submenu: [
+          { id: 'rect', label: 'Rectangle', icon: <Square size={14} />, onClick: () => updateNodeType(nodeId, 'rect') },
+          { id: 'circle', label: 'Circle', icon: <Circle size={14} />, onClick: () => updateNodeType(nodeId, 'circle') },
+          { id: 'diamond', label: 'Diamond', icon: <Diamond size={14} />, onClick: () => updateNodeType(nodeId, 'diamond') },
+          { id: 'hexagon', label: 'Hexagon', onClick: () => updateNodeType(nodeId, 'hexagon') },
+          { id: 'stadium', label: 'Stadium', onClick: () => updateNodeType(nodeId, 'stadium') },
+          { id: 'subroutine', label: 'Subroutine', icon: <Square size={14} />, onClick: () => updateNodeType(nodeId, 'subroutine') },
+        ],
+      },
+      { id: 'sep1', separator: true },
+      {
+        id: 'copy',
+        label: 'Copy',
+        icon: <Copy size={16} />,
+        onClick: () => {
+          const newState = { ...diagramState, selectedNode: nodeId };
+          onDiagramChange(newState);
+          onCopy();
+        },
+      },
+      {
+        id: 'delete',
+        label: 'Delete',
+        icon: <Trash2 size={16} />,
+        onClick: () => {
+          const newState = { ...diagramState, selectedNode: nodeId };
+          onDiagramChange(newState);
+          onDelete();
+        },
+      },
+    ];
+    
+    onShowContextMenu(event, items);
+  };
+
+  const updateNodeType = (nodeId: string, newType: NodeType) => {
+    const updatedNodes = diagramState.nodes.map(node =>
+      node.id === nodeId ? { ...node, type: newType } : node
+    );
+    
+    onDiagramChange({
+      ...diagramState,
+      nodes: updatedNodes,
+    });
+  };
+
   return (
     <div className="w-full h-full">
       <div className="mb-4">
@@ -265,6 +366,7 @@ export const Canvas: React.FC<CanvasProps> = ({ diagramState, onDiagramChange })
           onMouseDown={handleCanvasMouseDown}
           onMouseMove={handleCanvasMouseMove}
           onMouseUp={handleCanvasMouseUp}
+          onContextMenu={handleCanvasContextMenu}
           className={`relative w-full h-96 bg-gray-50 border-2 border-gray-200 rounded-lg overflow-hidden ${
             diagramState.mode === 'boundingBox' ? 'cursor-crosshair' : 
             diagramState.mode === 'connect' ? 'cursor-pointer' : 'cursor-default'
@@ -357,6 +459,7 @@ export const Canvas: React.FC<CanvasProps> = ({ diagramState, onDiagramChange })
               onClick={() => handleNodeClick(node.id)}
               onLabelChange={(newLabel) => handleNodeLabelChange(node.id, newLabel)}
               onMove={() => {}} // Not used since we handle movement via drag/drop
+              onContextMenu={(event) => handleNodeContextMenu(event, node.id)}
             />
           ))}
         </div>

@@ -10,6 +10,7 @@ interface NodeComponentProps {
   onClick: () => void;
   onLabelChange: (newLabel: string) => void;
   onMove: (newX: number, newY: number) => void;
+  onContextMenu?: (event: React.MouseEvent) => void;
 }
 
 export const NodeComponent: React.FC<NodeComponentProps> = ({
@@ -19,6 +20,7 @@ export const NodeComponent: React.FC<NodeComponentProps> = ({
   onClick,
   onLabelChange,
   onMove,
+  onContextMenu,
 }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [editLabel, setEditLabel] = useState(node.label);
@@ -100,6 +102,7 @@ export const NodeComponent: React.FC<NodeComponentProps> = ({
       className={getNodeClasses()}
       onClick={onClick}
       onDoubleClick={handleDoubleClick}
+      onContextMenu={onContextMenu}
     >
       {isEditing ? (
         <input

@@ -6,8 +6,10 @@ import { NodePalette } from '@/components/NodePalette';
 import { MermaidPreview } from '@/components/MermaidPreview';
 import { Toolbar } from '@/components/Toolbar';
 import { PropertiesPanel } from '@/components/PropertiesPanel';
+import { ContextMenu } from '@/components/ContextMenu';
 import { DiagramState, ToolMode } from '@/types';
 import { useUndoRedo } from '@/hooks/useUndoRedo';
+import { useContextMenu } from '@/hooks/useContextMenu';
 import { Download, FileText, Image as ImageIcon, Save, FolderOpen, Upload } from 'lucide-react';
 
 export default function Home() {
@@ -35,6 +37,8 @@ export default function Home() {
     type: 'node' | 'connection' | 'boundingBox';
     data: any;
   } | null>(null);
+
+  const { contextMenu, showContextMenu, hideContextMenu } = useContextMenu();
 
   const handleDiagramChange = (newState: DiagramState) => {
     pushToHistory(newState);
@@ -402,7 +406,15 @@ export default function Home() {
 
         <div className="flex-1 flex">
           <div className="flex-1 p-4">
-            <Canvas diagramState={diagramState} onDiagramChange={handleDiagramChange} />
+            <Canvas 
+              diagramState={diagramState} 
+              onDiagramChange={handleDiagramChange}
+              onShowContextMenu={showContextMenu}
+              onCopy={handleCopy}
+              onPaste={handlePaste}
+              onDelete={handleDelete}
+              hasClipboard={!!clipboard}
+            />
           </div>
           
           <div className="w-96 p-4">
@@ -415,6 +427,14 @@ export default function Home() {
           />
         </div>
       </div>
+      
+      {/* Context Menu */}
+      <ContextMenu
+        isOpen={contextMenu.isOpen}
+        position={contextMenu.position}
+        items={contextMenu.items}
+        onClose={hideContextMenu}
+      />
     </div>
   );
 }
