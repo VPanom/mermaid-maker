@@ -4,6 +4,10 @@ export interface MermaidNode {
   position: { x: number; y: number };
   label: string;
   connections: string[];
+  backgroundColor?: string;
+  textColor?: string;
+  borderColor?: string;
+  borderWidth?: number;
 }
 
 export interface Connection {
@@ -12,6 +16,7 @@ export interface Connection {
   to: string;
   label?: string;
   type: 'arrow' | 'line' | 'dotted';
+  color?: string;
 }
 
 export interface BoundingBox {

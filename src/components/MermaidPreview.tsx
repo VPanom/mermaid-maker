@@ -167,6 +167,42 @@ export const MermaidPreview: React.FC<MermaidPreviewProps> = ({ diagramState }) 
       code += `    ${fromId} ${arrow}${label} ${toId}\n`;
     });
 
+    // Add styling for nodes
+    let styleIndex = 0;
+    state.nodes.forEach(node => {
+      const nodeId = node.id.replace(/[^a-zA-Z0-9]/g, '');
+      
+      if (node.backgroundColor || node.textColor || node.borderColor) {
+        code += `    classDef style${styleIndex} `;
+        
+        if (node.backgroundColor) {
+          code += `fill:${node.backgroundColor}`;
+        }
+        if (node.textColor) {
+          code += `${node.backgroundColor ? ',' : ''}color:${node.textColor}`;
+        }
+        if (node.borderColor) {
+          code += `${(node.backgroundColor || node.textColor) ? ',' : ''}stroke:${node.borderColor}`;
+        }
+        if (node.borderWidth) {
+          code += `${(node.backgroundColor || node.textColor || node.borderColor) ? ',' : ''}stroke-width:${node.borderWidth}px`;
+        }
+        
+        code += `\n`;
+        code += `    class ${nodeId} style${styleIndex}\n`;
+        styleIndex++;
+      }
+    });
+
+    // Add styling for connections
+    state.connections.forEach((connection, index) => {
+      if (connection.color) {
+        const fromId = connection.from.replace(/[^a-zA-Z0-9]/g, '');
+        const toId = connection.to.replace(/[^a-zA-Z0-9]/g, '');
+        code += `    linkStyle ${index} stroke:${connection.color}\n`;
+      }
+    });
+
     return code;
   };
 

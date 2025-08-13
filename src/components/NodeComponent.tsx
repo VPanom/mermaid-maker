@@ -29,6 +29,10 @@ export const NodeComponent: React.FC<NodeComponentProps> = ({
     opacity: isDragging ? 0.5 : 1,
     left: node.position.x,
     top: node.position.y,
+    backgroundColor: node.backgroundColor || (isSelected ? '#dbeafe' : '#ffffff'),
+    color: node.textColor || '#000000',
+    borderColor: node.borderColor || (isSelected ? '#3b82f6' : '#9ca3af'),
+    borderWidth: node.borderWidth || 2,
   };
 
   const handleDragStart = (e: React.DragEvent) => {
@@ -67,24 +71,23 @@ export const NodeComponent: React.FC<NodeComponentProps> = ({
   };
 
   const getNodeClasses = () => {
-    const baseClasses = "absolute cursor-pointer border-2 flex items-center justify-center text-sm font-medium select-none";
-    const selectedClasses = isSelected ? "border-blue-500 bg-blue-50" : "border-gray-400 bg-white hover:border-gray-600";
+    const baseClasses = "absolute cursor-pointer border-solid flex items-center justify-center text-sm font-medium select-none transition-colors";
     
     switch (node.type) {
       case 'rect':
-        return `${baseClasses} ${selectedClasses} w-24 h-12 rounded`;
+        return `${baseClasses} w-24 h-12 rounded`;
       case 'circle':
-        return `${baseClasses} ${selectedClasses} w-16 h-16 rounded-full`;
+        return `${baseClasses} w-16 h-16 rounded-full`;
       case 'diamond':
-        return `${baseClasses} ${selectedClasses} w-16 h-16 transform rotate-45`;
+        return `${baseClasses} w-16 h-16 transform rotate-45`;
       case 'hexagon':
-        return `${baseClasses} ${selectedClasses} w-20 h-12 hexagon`;
+        return `${baseClasses} w-20 h-12 hexagon`;
       case 'stadium':
-        return `${baseClasses} ${selectedClasses} w-24 h-12 rounded-full`;
+        return `${baseClasses} w-24 h-12 rounded-full`;
       case 'subroutine':
-        return `${baseClasses} ${selectedClasses} w-24 h-12 rounded border-l-4 border-r-4`;
+        return `${baseClasses} w-24 h-12 rounded border-l-4 border-r-4`;
       default:
-        return `${baseClasses} ${selectedClasses} w-24 h-12 rounded`;
+        return `${baseClasses} w-24 h-12 rounded`;
     }
   };
 

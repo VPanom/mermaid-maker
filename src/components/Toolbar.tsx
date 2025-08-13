@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { ToolMode } from '@/types';
-import { MousePointer2, Move3D, Square, ArrowUpRight, Trash2, Undo, Redo } from 'lucide-react';
+import { MousePointer2, Move3D, Square, ArrowUpRight, Trash2, Undo, Redo, Copy, Clipboard } from 'lucide-react';
 
 interface ToolbarProps {
   mode: ToolMode;
@@ -10,7 +10,10 @@ interface ToolbarProps {
   onDelete: () => void;
   onUndo: () => void;
   onRedo: () => void;
+  onCopy: () => void;
+  onPaste: () => void;
   hasSelection: boolean;
+  hasClipboard: boolean;
   canUndo: boolean;
   canRedo: boolean;
 }
@@ -21,7 +24,10 @@ export const Toolbar: React.FC<ToolbarProps> = ({
   onDelete, 
   onUndo, 
   onRedo, 
+  onCopy,
+  onPaste,
   hasSelection, 
+  hasClipboard,
   canUndo, 
   canRedo 
 }) => {
@@ -81,6 +87,36 @@ export const Toolbar: React.FC<ToolbarProps> = ({
         >
           <Redo size={16} />
           <span className="hidden sm:inline">Redo</span>
+        </button>
+      </div>
+      
+      {/* Copy/Paste buttons */}
+      <div className="flex items-center gap-1 p-1 bg-gray-100 rounded ml-4">
+        <button
+          onClick={onCopy}
+          disabled={!hasSelection}
+          className={`p-2 rounded text-sm flex items-center gap-1 transition-colors ${
+            hasSelection
+              ? 'hover:bg-gray-200 text-gray-700'
+              : 'text-gray-400 cursor-not-allowed'
+          }`}
+          title="Copy (Ctrl+C)"
+        >
+          <Copy size={16} />
+          <span className="hidden sm:inline">Copy</span>
+        </button>
+        <button
+          onClick={onPaste}
+          disabled={!hasClipboard}
+          className={`p-2 rounded text-sm flex items-center gap-1 transition-colors ${
+            hasClipboard
+              ? 'hover:bg-gray-200 text-gray-700'
+              : 'text-gray-400 cursor-not-allowed'
+          }`}
+          title="Paste (Ctrl+V)"
+        >
+          <Clipboard size={16} />
+          <span className="hidden sm:inline">Paste</span>
         </button>
       </div>
       
